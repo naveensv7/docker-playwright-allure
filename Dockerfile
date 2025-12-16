@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY package*.json .
 
-RUN npm ci
+
 
 ENV ALLURE_VERSION=2.29.0
 

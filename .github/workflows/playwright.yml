@@ -23,7 +23,7 @@ jobs:
         run: docker build -t my-doc-play-app-01 .
 
       - name: docker container run
-        run: docker run --rm -v ${{ github.workspace }}:/app my-doc-play-app-01
+        run: docker run --rm -v ${{ github.workspace }}:/app  my-doc-play-app-01 sh -c "npm ci && npm run start"
 
       - name: allure generate
         run: allure generate allure-results --clean -o reports/allure-report
