@@ -1,0 +1,35 @@
+name: Playwright Tests
+on:
+  push:
+    branches: ["main"]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Allure CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jre wget unzip
+          ALLURE_VERSION=2.29.0
+          wget https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.zip
+          unzip allure-${ALLURE_VERSION}.zip
+          sudo ln -s $PWD/allure-${ALLURE_VERSION}/bin/allure /usr/bin/allure
+
+      - name: Docker build image
+        run: docker build -t my-doc-play-app-01 .
+
+      - name: docker container run
+        run: docker run --rm -v ${{ github.workspace }}:/app my-doc-play-app-01
+
+      - name: allure generate
+        run: allure generate allure-results --clean -o reports/allure-report
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: reports/allure-report
